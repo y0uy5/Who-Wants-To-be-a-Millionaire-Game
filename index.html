@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!--Font Awesome-->
+    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
@@ -13,25 +13,72 @@
       referrerpolicy="no-referrer"
     />
 
-    <!-- Fonts -->
+    <!-- Arabic Font: Cairo -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap"
       rel="stylesheet"
     />
+
     <!-- Scripts -->
-    <!-- <script defer src="scripts/script.js"></script> -->
     <script defer type="module" src="src/index.js"></script>
 
     <!-- Styles -->
     <link rel="stylesheet" href="dist/output.css" />
 
-    <title>WWTBAM</title>
+    <style>
+      body {
+        font-family: "Cairo", sans-serif;
+        user-select: none;
+      }
+      .options {
+        cursor: pointer;
+        transition: all 0.25s ease;
+      }
+      .options:hover {
+        background: linear-gradient(to bottom, #f59e0b, #d97706);
+        color: #000;
+        border-color: #fbbf24;
+      }
+      .selected-answer {
+        background: linear-gradient(to bottom, #f59e0b, #b45309) !important;
+        color: #000 !important;
+        border-color: #fef08a !important;
+      }
+      .correct-answer {
+        background: linear-gradient(to bottom, #16a34a, #15803d) !important;
+        color: #fff !important;
+        border-color: #86efac !important;
+      }
+      .wrong-answer {
+        background: linear-gradient(to bottom, #dc2626, #991b1b) !important;
+        color: #fff !important;
+        border-color: #fca5a5 !important;
+      }
+      .disabled-option {
+        opacity: 0.2;
+        pointer-events: none;
+      }
+      .lifeline-used {
+        opacity: 0.35;
+        pointer-events: none;
+        filter: grayscale(100%);
+      }
+      .money-active {
+        background: linear-gradient(90deg, #d97706, #f59e0b, #d97706);
+        color: #000 !important;
+        font-weight: 900;
+        border-radius: 6px;
+        padding: 2px 10px;
+      }
+    </style>
+
+    <title>من سيربح الدينار و99 قرش</title>
   </head>
 
-  <body class="font-roboto">
-    <!-- Lifeline Audio -->
+  <body>
+    <!-- Audios -->
     <audio id="first-ping" src="audio/first-ping.mp3"></audio>
     <audio id="second-ping" src="audio/second-ping.mp3"></audio>
     <audio id="third-ping" src="audio/third-ping.mp3"></audio>
@@ -40,122 +87,154 @@
     <audio id="correct-answer-audio" src="audio/correct-answer.mp3"></audio>
     <audio id="wrong-answer-audio" src="audio/wrong-answer-audio.mp3"></audio>
 
-    <!-- Welcome -->
+    <!-- Welcome Screen -->
     <section
-      class="welcome-container h-screen w-full flex items-center justify-center bg-[url(../images/welcome-background-mobile.jpg)] sm:bg-[url(../images/welcome-background-img.jpg)] sm:items-end"
+      class="welcome-container h-screen w-full flex flex-col items-center justify-end p-6 bg-cover bg-center bg-[url(../images/welcome-background-mobile.jpg)] sm:bg-[url(../images/welcome-background-img.jpg)]"
     >
       <div
-        id="lets-play"
-        class="rounded border-4 border-border p-4 text-white font-bold text-xl bg-gradient-to-b from-darkerBlue via-Blue to-darkerBlue w-4/5 my-8 hover:bg-gradient-to-b hover:from-orangeGradientLight hover:to-orangeGradientDark hover:text-black hover:border-orange"
+        class="rounded-xl border-4 border-border px-6 py-4 mb-4 text-white text-center bg-gradient-to-b from-darkerBlue via-Blue to-darkerBlue shadow-2xl"
       >
-        <p class="text-center text-lg">LET'S PLAY</p>
+        <p class="text-orange font-bold text-sm sm:text-base mb-1">
+          النسخة الخاصة
+        </p>
+        <h1 class="text-2xl sm:text-4xl font-black">
+          من سيربح الدينار و99 قرش؟
+        </h1>
       </div>
+
+      <button
+        id="lets-play"
+        class="cursor-pointer rounded-xl border-4 border-border p-4 text-white font-black text-xl sm:text-2xl bg-gradient-to-b from-darkerBlue via-Blue to-darkerBlue w-4/5 sm:w-2/5 mb-8 hover:bg-gradient-to-b hover:from-orangeGradientLight hover:to-orangeGradientDark hover:text-black hover:border-orange transition"
+      >
+        ابدأ اللعب
+      </button>
     </section>
 
-    <!--Actual Game -->
+    <!-- Actual Game Screen -->
     <section
-      class="hidden question-container py-6 p-2 h-screen w-full text-white flex-col-reverse justify-start gap-2 sm:flex-col sm:justify-around sm:m-0 items-center bg-[url(../images/game-background.jpg)]"
+      class="hidden question-container py-4 px-3 h-screen w-full text-white flex-col justify-between items-center bg-cover bg-center bg-[url(../images/game-background.jpg)] overflow-y-auto"
     >
-      <!-- Money, lifelines -->
-
-      <div class="sm:w-4/5 flex sm:justify-between">
-        <div
-          class="lifelines flex items-center gap-6 sm:flex-col sm:justify-evenly"
-        >
-          <div id="fifty-fifty" class="hover:cursor-pointer">
-            <img src="images/50-50.png" alt="" />
+      <!-- Top Bar: Lifelines & Money Ladder -->
+      <div class="w-full sm:w-4/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <!-- Lifelines & Audio Control -->
+        <div class="lifelines flex items-center gap-4 sm:flex-col sm:justify-evenly">
+          <div id="fifty-fifty" title="حذف إجابتين" class="hover:cursor-pointer transition transform hover:scale-105">
+            <img src="images/50-50.png" alt="حذف إجابتين" class="w-16 sm:w-20" />
           </div>
 
-          <div id="phone-a-friend" class="hover:cursor-pointer">
-            <img src="images/phone-a-friend.png" alt="" />
+          <div id="phone-a-friend" title="اتصال بصديق" class="hover:cursor-pointer transition transform hover:scale-105">
+            <img src="images/phone-a-friend.png" alt="اتصال بصديق" class="w-16 sm:w-20" />
           </div>
-          <div id="ask-the-audience" class="hover:cursor-pointer">
-            <img src="images/ask-the-audience.png" alt="" />
+
+          <div id="ask-the-audience" title="رأي الجمهور" class="hover:cursor-pointer transition transform hover:scale-105">
+            <img src="images/ask-the-audience.png" alt="رأي الجمهور" class="w-16 sm:w-20" />
           </div>
-          <button class="audio-control text-5xl text-white">
+
+          <button class="audio-control text-3xl sm:text-4xl text-white hover:text-orange transition" title="التحكم بالصوت">
             <i class="fas fa-volume-up hidden unmute"></i>
             <i class="fas fa-volume-mute mute"></i>
           </button>
         </div>
 
-        <div
-          class="hidden sm:block bg-blueCardBg rounded border-4 border-silverWhite"
-        >
-          <ol
-            reversed
-            class="text-right text-orange text-base list-decimal font-medium p-2 pl-10"
-          >
-            <li class="text-white font-bold">₦20,000,000</li>
-            <li>₦10,000,000</li>
-            <li>₦5,000,000</li>
-            <li>₦2,000,000</li>
-            <li>₦1,000,000</li>
-            <li class="text-white font-bold">₦500,000</li>
-            <li>₦250,000</li>
-            <li>₦150,000</li>
-            <li class="money-active">₦100,000</li>
-            <li>₦50,000</li>
-            <li class="text-white font-bold">₦30,000</li>
-            <li>₦20,000</li>
-            <li>₦15,000</li>
-            <li>₦10,000</li>
-            <li>₦5,000</li>
-          </ol>
+        <!-- 10-Level Money Ladder -->
+        <div class="bg-blueCardBg rounded-xl border-4 border-silverWhite px-5 py-2 shadow-xl min-w-[230px]">
+          <ul id="money-ladder" class="text-right text-orange text-sm sm:text-base font-bold space-y-1">
+            <li data-level="9" class="text-white font-black">10 - 1.99 دينار</li>
+            <li data-level="8">9 - دينار ونص</li>
+            <li data-level="7">8 - دينار واحد</li>
+            <li data-level="6" class="text-white font-extrabold">7 - نص دينار</li>
+            <li data-level="5">6 - ربع دينار</li>
+            <li data-level="4">5 - 20 قرش</li>
+            <li data-level="3" class="text-white font-extrabold">4 - 10 قروش</li>
+            <li data-level="2">3 - 5 قروش</li>
+            <li data-level="1">2 - 3 قروش</li>
+            <li data-level="0" class="money-active">1 - 1 قرش</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Question -->
-      <div class="w-4/5">
+      <!-- Question & Options Area -->
+      <div class="w-full sm:w-4/5 mb-2">
+        <div class="text-center mb-2">
+          <span
+            id="current-prize-badge"
+            class="inline-block bg-blueCardBg border-2 border-orange text-orange font-extrabold px-4 py-1 rounded-full text-sm sm:text-base"
+          >
+            السؤال 1 • قيمة الجائزة: 1 قرش
+          </span>
+        </div>
+
         <div
           id="question-card"
-          class="rounded border-4 border-border p-4 bg-gradient-to-b from-darkerBlue via-Blue to-darkerBlue w-full my-3"
+          class="rounded-xl border-4 border-border p-4 sm:p-5 bg-gradient-to-b from-darkerBlue via-Blue to-darkerBlue w-full my-2 shadow-xl text-center text-lg sm:text-2xl font-bold"
         >
-          <p class="text-center text-lg">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam,
-            doloremque?
-          </p>
+          <h2>جاري تحميل السؤال...</h2>
         </div>
-        <!-- Options -->
+
+        <!-- 4 Options -->
         <div
-          class="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4 place-content-stretch w-full relative"
+          id="options-grid"
+          class="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4 place-content-stretch w-full relative mt-3"
         >
-          <div
-            data-id="0"
-            id="option-one"
-            class="options rounded border-4 border-border p-2 sm:p-3 w-full"
-          >
-            <span class="text-orange font-bold mr-1">A:</span>
-            <span>Lorem</span>
+          <div data-id="0" id="option-one" class="options rounded-xl border-4 border-border p-3 sm:p-4 w-full bg-gradient-to-b from-darkerBlue via-Blue to-darkerBlue text-base sm:text-lg font-bold">
+            <span class="text-orange font-black ml-2">أ:</span>
+            <span></span>
           </div>
 
-          <div
-            data-id="1"
-            id="option-two"
-            class="options rounded border-4 border-border p-2 sm:p-3 w-full"
-          >
-            <span class="text-orange font-bold mr-1">B:</span>
-            <span>Ipsum</span>
+          <div data-id="1" id="option-two" class="options rounded-xl border-4 border-border p-3 sm:p-4 w-full bg-gradient-to-b from-darkerBlue via-Blue to-darkerBlue text-base sm:text-lg font-bold">
+            <span class="text-orange font-black ml-2">ب:</span>
+            <span></span>
           </div>
 
-          <div
-            data-id="2"
-            id="option-three"
-            class="options rounded border-4 border-border p-2 sm:p-3 w-full"
-          >
-            <span class="text-orange font-bold mr-1">C:</span>
-            <span>Dolor</span>
+          <div data-id="2" id="option-three" class="options rounded-xl border-4 border-border p-3 sm:p-4 w-full bg-gradient-to-b from-darkerBlue via-Blue to-darkerBlue text-base sm:text-lg font-bold">
+            <span class="text-orange font-black ml-2">ج:</span>
+            <span></span>
           </div>
 
-          <div
-            data-id="3"
-            id="option-four"
-            class="options rounded border-4 border-border p-2 sm:p-3 w-full"
-          >
-            <span class="text-orange font-bold mr-1">D:</span>
-            <span>Sit amet</span>
+          <div data-id="3" id="option-four" class="options rounded-xl border-4 border-border p-3 sm:p-4 w-full bg-gradient-to-b from-darkerBlue via-Blue to-darkerBlue text-base sm:text-lg font-bold">
+            <span class="text-orange font-black ml-2">د:</span>
+            <span></span>
           </div>
         </div>
       </div>
     </section>
+
+    <!-- Lifeline Modal (Phone a Friend / Ask the Audience) -->
+    <div
+      id="lifeline-modal"
+      class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+    >
+      <div class="bg-blueCardBg border-4 border-border rounded-2xl p-6 max-w-md w-full text-white text-center shadow-2xl">
+        <h3 id="lifeline-title" class="text-2xl font-black text-orange mb-4"></h3>
+        <div id="lifeline-body" class="text-lg mb-6"></div>
+        <button
+          id="close-lifeline-modal"
+          class="cursor-pointer rounded-xl border-2 border-orange px-6 py-2 font-bold bg-gradient-to-b from-darkerBlue via-Blue to-darkerBlue hover:text-orange"
+        >
+          إغلاق
+        </button>
+      </div>
+    </div>
+
+    <!-- End Game / Winner Modal -->
+    <div
+      id="endgame-modal"
+      class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4"
+    >
+      <div class="bg-blueCardBg border-4 border-orange rounded-2xl p-8 max-w-lg w-full text-white text-center shadow-2xl">
+        <p id="endgame-subtitle" class="text-orange font-bold text-lg mb-2"></p>
+        <h2 id="endgame-title" class="text-3xl sm:text-4xl font-black mb-4"></h2>
+        <div class="rounded-xl border-2 border-silverWhite bg-darkerBlue py-4 px-6 my-4">
+          <p class="text-sm text-gray-300 mb-1">رصيدك النهائي</p>
+          <p id="endgame-prize" class="text-3xl sm:text-4xl font-black text-orange"></p>
+        </div>
+        <button
+          id="restart-game"
+          class="cursor-pointer mt-4 rounded-xl border-4 border-border px-8 py-3 font-black text-xl bg-gradient-to-b from-darkerBlue via-Blue to-darkerBlue hover:from-orangeGradientLight hover:to-orangeGradientDark hover:text-black transition"
+        >
+          العب مرة ثانية
+        </button>
+      </div>
+    </div>
   </body>
 </html>
