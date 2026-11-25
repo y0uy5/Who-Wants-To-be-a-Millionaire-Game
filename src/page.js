@@ -1,19 +1,11 @@
-// ====================================================== //
-// ==== This file contains the game state functions  === //
-// ==================================================== //
-
-
-// ====================================== //
-// ==== Get Welcome Page/Section ======= //
-// ==================================== //
 const welcomeSection = document.querySelector(".welcome-container");
-
-// ======================================= //
-// ==== Get Question Page/Section ======= //
-// ===================================== //
 const questionSection = document.querySelector(".question-container");
+const endgameModal = document.getElementById("endgame-modal");
+const lifelineModal = document.getElementById("lifeline-modal");
 
 export {
   welcomeSection,
-  questionSection
-}
+  questionSection,
+  endgameModal,
+  lifelineModal
+};
