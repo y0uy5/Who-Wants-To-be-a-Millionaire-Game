@@ -1,73 +1,86 @@
 // ==================================================== //
-// ==== This file contains all the functions that === //
-// ==== handles the answer ========================= //
-// ================================================ //
+// ==== معالجة الإجابة والانتقال للفوز عند السؤال 10 == //
+// ==================================================== //
 
-
-// ==== Audio/Sounds ==== //
 import {
   letsPlayAudio,
   selectedAnswerAudio,
   correctAnswerAudio,
-  wrongAnswerAudio
+  wrongAnswerAudio,
+  isAudioEnabled
 } from "./audio.js";
 
 import {
+  QUESTIONS,
+  getCurrentQuestionIndex,
+  setCurrentQuestionIndex,
   displayNextQuestion
 } from "./question.js";
 
+import { endGame } from "./gameState.js";
 
-// ==== Function to introduce delay ==== //
-const delay = (ms) => {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-};
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// ================================= //
-// ==== Handle Answer Function ==== //
-// =============================== //
+// حساب محطات الأمان عند الخسارة
+function getGuaranteedPrize(questionIdx) {
+  if (questionIdx >= 7) return "نص دينار"; // اجتاز السؤال 7
+  if (questionIdx >= 4) return "10 قروش"; // اجتاز السؤال 4
+  return "0 قرش";
+}
+
 async function handleAnswer(e) {
-  // console.log("🚀 ~ handleAnswer is running", handleAnswer);
-  
-  // ==== Get audio boolean from localStorage ==== //
-  let playAudio = JSON.parse(localStorage.getItem('playAudio'));
-  
-  const selectedAnswer = e.target.dataset.id;
-  let options = document.getElementsByClassName("options");
-  options = Array.from(options);
-  const currentQuestion = JSON.parse(localStorage.getItem('currentQuestion'))
-  const currentAnswer = currentQuestion.correct;
+  const playAudio = isAudioEnabled();
+  const selectedAnswer = Number(e.currentTarget.dataset.id);
+
+  // قفل النقر لمنع الضغط المزدوج أثناء التوتر
+  const optionsGrid = document.getElementById("options-grid");
+  optionsGrid.classList.add("pointer-events-none");
+
+  const options = Array.from(document.getElementsByClassName("options"));
+  const currentQuestion = JSON.parse(localStorage.getItem("currentQuestion"));
+  const currentAnswer = Number(currentQuestion.correct);
+  const qIndex = getCurrentQuestionIndex();
 
   if (playAudio) {
     letsPlayAudio.pause();
-    selectedAnswerAudio.play();
+    selectedAnswerAudio.currentTime = 0;
+    selectedAnswerAudio.play().catch(() => {});
   }
   options[selectedAnswer].classList.add("selected-answer");
 
-  await delay(2000);
-  
-  // console.log(playAudio)
+  // انتظار لحظة التوتر (2.5 ثانية)
+  await delay(2500);
 
-  if (selectedAnswer != currentAnswer) {
-    options[selectedAnswer].classList.replace(
-      "selected-answer",
-      "wrong-answer"
-    );
+  if (selectedAnswer !== currentAnswer) {
+    // إجابة خاطئة
+    options[selectedAnswer].classList.replace("selected-answer", "wrong-answer");
+    options[currentAnswer].classList.add("correct-answer");
     selectedAnswerAudio.pause();
-    if (playAudio) wrongAnswerAudio.play();
-    await delay(2000);
-    endGame();
+    if (playAudio) {
+      wrongAnswerAudio.currentTime = 0;
+      wrongAnswerAudio.play().catch(() => {});
+    }
+    await delay(2500);
+    endGame(false, getGuaranteedPrize(qIndex));
   } else {
-    options[selectedAnswer].classList.remove("selected-answer");
-    options[selectedAnswer].classList.add("correct-answer");
+    // إجابة صحيحة
+    options[selectedAnswer].classList.replace("selected-answer", "correct-answer");
     selectedAnswerAudio.pause();
-    if (playAudio) correctAnswerAudio.play();
-    await delay(6000);
-    displayNextQuestion();
+    if (playAudio) {
+      correctAnswerAudio.currentTime = 0;
+      correctAnswerAudio.play().catch(() => {});
+    }
+
+    await delay(3500);
+
+    // إذا كان هذا هو السؤال العاشر (index 9) -> الفوز بالجائزة الكبرى!
+    if (qIndex >= QUESTIONS.length - 1) {
+      endGame(true, "1.99 دينار");
+    } else {
+      setCurrentQuestionIndex(qIndex + 1);
+      displayNextQuestion();
+    }
   }
 }
 
-export {
-  handleAnswer
-}
+export { handleAnswer };
