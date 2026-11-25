@@ -1,122 +1,155 @@
 // ==================================================== //
-// ==== This file contains all question functions  === //
-// ================================================== //
+// ==== ملف الأسئلة الـ 10 وسلم الجوائز (عربي) ====== //
+// ==================================================== //
 
-// ==== Audios/Sounds ==== //
-import {
-  letsPlayAudio,
-} from "./audio.js";
+import { letsPlayAudio, isAudioEnabled } from "./audio.js";
+import { resetState } from "./gameState.js";
+import { handleAnswer } from "./answer.js";
 
-// ==== Game State Functions ==== //
-import {
-  resetState
-} from "./gameState.js";
+// سلم الجوائز الـ 10
+const PRIZE_LADDER = [
+  "1 قرش",
+  "3 قروش",
+  "5 قروش",
+  "10 قروش",
+  "20 قرش",
+  "ربع دينار",
+  "نص دينار",
+  "دينار واحد",
+  "دينار ونص",
+  "1.99 دينار"
+];
 
-import {
-  handleAnswer
-} from "./answer.js";
+// قائمة الأسئلة الـ 10 (عدّل النصوص هنا بحريتك)
+const QUESTIONS = [
+  {
+    question: "ما هو لون الحليب الطبيعي؟",
+    content: ["أبيض", "أزرق سماوي", "فسفوري", "شفاف"],
+    correct: 0
+  },
+  {
+    question: "إذا أكلت شاورما بدون مثومة، فماذا يُعتبر هذا الفعل في العُرف الأردني؟",
+    content: [
+      "خيانة عظمى للسندويشة",
+      "نظام صحي متكامل",
+      "توفير استراتيجي",
+      "وصفة فرنسية"
+    ],
+    correct: 0
+  },
+  {
+    question: "كم تساوي مدة «خمس دقائق وبكون عندك» عند الشباب؟",
+    content: [
+      "5 دقائق بالضبط",
+      "نصف ساعة إلى ما لا نهاية",
+      "30 ثانية",
+      "دقيقتين ونص"
+    ],
+    correct: 1
+  },
+  {
+    question: "ما هي المدينة الأردنية التي تُلقّب بـ «عروس الشمال»؟",
+    content: ["السلط", "إربد", "الكرك", "معان"],
+    correct: 1
+  },
+  {
+    question: "أي من هذه العبارات تعني باللهجة الأردنية «اترك الموضوع عليّ ولا تهكل هم»؟",
+    content: ["أبشر بعزّك", "يعطيك العافية", "صحّتين وهنا", "مساء الخير"],
+    correct: 0
+  },
+  {
+    question: "ما هو المكوّن الأساسي الذي يُصنع منه الجميد الكركي الأصيل؟",
+    content: [
+      "حليب الغنم أو الماعز",
+      "حليب جوز الهند",
+      "طحين القمح",
+      "زيت الزيتون"
+    ],
+    correct: 0
+  },
+  {
+    question: "كم يبلغ مجموع قياس زوايا المثلث الداخلية؟",
+    content: ["90 درجة", "180 درجة", "270 درجة", "360 درجة"],
+    correct: 1
+  },
+  {
+    question: "ما هو الكوكب الذي يُعرف في مجموعتنا الشمسية باسم «الكوكب الأحمر»؟",
+    content: ["المشتري", "الزهرة", "المريخ", "زحل"],
+    correct: 2
+  },
+  {
+    question: "ما هي أطول سورة في القرآن الكريم؟",
+    content: ["سورة آل عمران", "سورة النساء", "سورة البقرة", "سورة الأعراف"],
+    correct: 2
+  },
+  {
+    question: "إذا ربحت اليوم دينار و99 قرش، كم يتبقى لك لتُكمل الدينارين؟",
+    content: ["قرش واحد فقط", "نصف دينار", "عشرة قروش", "ربع دينار"],
+    correct: 0
+  }
+];
 
-// ==== Get audio boolean from localStorage ==== //
-let playAudio = JSON.parse(localStorage.getItem('playAudio'));
+let currentQuestionIndex = 0;
 
-// ==== Get question from localStorage if any exist ==== //
-let currentQuestion = JSON.parse(localStorage.getItem('currentQuestion'));
-
-// =================================================== //
-// ==== This function displays the next question ==== //
-// ================================================= //
-async function displayNextQuestion() {
-  // console.log("🚀 ~ displayNextQuestion is running", displayNextQuestion);
-  resetState();
-  if (playAudio) letsPlayAudio.play();
-  const question = await getRandomQuestion();
-  currentQuestion = question;
-  
-  // ==== Save current question to localStorage ==== //
-  localStorage.setItem('currentQuestion', JSON.stringify(currentQuestion));
-  // console.log(JSON.parse(localStorage.getItem('currentQuestion')))
-  displayQuestion(currentQuestion);
+function getCurrentQuestionIndex() {
+  return currentQuestionIndex;
 }
 
+function setCurrentQuestionIndex(index) {
+  currentQuestionIndex = index;
+}
 
-// ============================================== //
-// ==== This function displays the question ==== //
-// ============================================ //
+// تحديث تمييز سلم الجوائز
+function updateMoneyLadder(levelIndex) {
+  const items = document.querySelectorAll("#money-ladder li");
+  items.forEach((item) => {
+    item.classList.remove("money-active");
+    if (Number(item.dataset.level) === levelIndex) {
+      item.classList.add("money-active");
+    }
+  });
+
+  const badge = document.getElementById("current-prize-badge");
+  if (badge) {
+    badge.textContent = `السؤال ${levelIndex + 1} من 10 • قيمة الجائزة: ${PRIZE_LADDER[levelIndex]}`;
+  }
+}
+
+// عرض السؤال الحالي
+function displayNextQuestion() {
+  resetState();
+  if (isAudioEnabled()) {
+    letsPlayAudio.play().catch(() => {});
+  }
+
+  const questionObj = QUESTIONS[currentQuestionIndex];
+  localStorage.setItem("currentQuestion", JSON.stringify(questionObj));
+  updateMoneyLadder(currentQuestionIndex);
+  displayQuestion(questionObj);
+}
+
 function displayQuestion(questionObject) {
-  // console.log("🚀 ~ displayQuestion is running", displayQuestion);
-  // console.log(currentQuestion);
-
   const questionCard = document.getElementById("question-card");
   questionCard.innerHTML = `<h2>${questionObject.question}</h2>`;
 
-  const option1 = document.getElementById("option-one");
-  const option2 = document.getElementById("option-two");
-  const option3 = document.getElementById("option-three");
-  const option4 = document.getElementById("option-four");
+  const letters = ["أ:", "ب:", "ج:", "د:"];
+  const optionIds = ["option-one", "option-two", "option-three", "option-four"];
 
-  option1.innerHTML = `
-    <span class="text-orange font-bold mr-1">A:</span>
-    <span>${questionObject.content[0]}</span>`;
-  option2.innerHTML = `
-    <span class="text-orange font-bold mr-1">B:</span>
-    <span>${questionObject.content[1]}</span>`;
-  option3.innerHTML = `
-    <span class="text-orange font-bold mr-1">C:</span>
-    <span>${questionObject.content[2]}</span>`;
-  option4.innerHTML = `
-    <span class="text-orange font-bold mr-1">D:</span>
-    <span>${questionObject.content[3]}</span>`;
-
-  // prepare options for click
-  let options = document.getElementsByClassName("options");
-  options = Array.from(options);
-  options.forEach((option) => {
-    option.addEventListener("click", handleAnswer);
+  optionIds.forEach((id, idx) => {
+    const el = document.getElementById(id);
+    el.innerHTML = `
+      <span class="text-orange font-black ml-2">${letters[idx]}</span>
+      <span>${questionObject.content[idx]}</span>
+    `;
+    el.onclick = handleAnswer;
   });
 }
 
-
-// =============================================== //
-// ==== Get a random question from the array ==== //
-// ============================================ //
-async function getRandomQuestion() {
-  const questions = await mergeQuestionSets();
-  const randomIndex = Math.floor(Math.random() * questions.length);
-
-  return questions[randomIndex];
-}
-
-
-// =================================================== //
-// ==== Get questions(Get the data from the URL) ==== //
-// ================================================= //
-async function getQuestions() {
-  const URL =
-    "https://raw.githubusercontent.com/aaronnech/Who-Wants-to-Be-a-Millionaire/master/questions.json";
-
-  try {
-    const response = await fetch(URL);
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-
-// ===================================================== //
-// ==== Merge all the question sets into one array ==== //
-// =================================================== //
-async function mergeQuestionSets() {
-  const data = await getQuestions();
-  let questions = [];
-  for (let i = 0; i < data.games.length; i++) {
-    questions = questions.concat(data.games[i].questions);
-  }
-
-  return questions;
-}
-
 export {
-  displayNextQuestion
-}
+  QUESTIONS,
+  PRIZE_LADDER,
+  getCurrentQuestionIndex,
+  setCurrentQuestionIndex,
+  displayNextQuestion,
+  updateMoneyLadder
+};
