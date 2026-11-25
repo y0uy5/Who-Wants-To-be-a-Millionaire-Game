@@ -46,7 +46,7 @@
       #lets-play {
         cursor: pointer;
         position: relative;
-        z-index: 20;
+        z-index: 50;
         background: linear-gradient(180deg, #061338, #103494, #061338);
         border: 3px solid #60a5fa;
         border-radius: 14px;
@@ -89,7 +89,7 @@
         flex-direction: column;
         align-items: center;
         gap: 0.7rem;
-        background: rgba(5, 15, 45, 0.8);
+        background: rgba(5, 15, 45, 0.85);
         padding: 0.75rem;
         border-radius: 16px;
         border: 2px solid #3b82f6;
@@ -97,9 +97,23 @@
       @media (max-width: 640px) {
         .lifelines-panel { flex-direction: row; width: 100%; justify-content: space-around; }
       }
-      .lifeline-btn { background: none; border: none; cursor: pointer; }
-      .lifeline-btn img { width: 68px; display: block; }
-      @media (max-width: 640px) { .lifeline-btn img { width: 54px; } }
+      .lifeline-btn {
+        background: #0d2b7a;
+        border: 2px solid #60a5fa;
+        border-radius: 50%;
+        width: 66px;
+        height: 66px;
+        color: #fff;
+        font-family: "Cairo", sans-serif;
+        font-weight: 900;
+        font-size: 0.85rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .lifeline-btn img { width: 100%; height: 100%; object-fit: contain; }
       .lifeline-used { opacity: 0.28; pointer-events: none; filter: grayscale(100%); }
       .audio-control { background: none; border: none; color: #fff; font-size: 1.9rem; cursor: pointer; }
 
@@ -217,23 +231,23 @@
         <p class="subtitle">النسخة الخاصة</p>
         <h1>من سيربح الدينار و99 قرش؟</h1>
       </div>
-      <button id="lets-play" type="button" onclick="startGame()">ابدأ اللعب</button>
+      <button id="lets-play" type="button" onclick="window.startGame()">ابدأ اللعب</button>
     </section>
 
     <!-- شاشة اللعب -->
     <section id="game-screen" class="hidden">
       <div class="top-bar">
         <div class="lifelines-panel">
-          <button id="fifty-fifty" class="lifeline-btn" type="button" onclick="useFiftyFifty()">
-            <img src="images/50-50.png" alt="حذف إجابتين" />
+          <button id="fifty-fifty" class="lifeline-btn" type="button" onclick="window.useFiftyFifty()">
+            <img src="images/50-50.png" alt="50:50" onerror="this.parentElement.textContent='50:50'" />
           </button>
-          <button id="phone-a-friend" class="lifeline-btn" type="button" onclick="usePhoneFriend()">
-            <img src="images/phone-a-friend.png" alt="اتصال بصديق" />
+          <button id="phone-a-friend" class="lifeline-btn" type="button" onclick="window.usePhoneFriend()">
+            <img src="images/phone-a-friend.png" alt="اتصال" onerror="this.parentElement.textContent='اتصال'" />
           </button>
-          <button id="ask-the-audience" class="lifeline-btn" type="button" onclick="useAskAudience()">
-            <img src="images/ask-the-audience.png" alt="رأي الجمهور" />
+          <button id="ask-the-audience" class="lifeline-btn" type="button" onclick="window.useAskAudience()">
+            <img src="images/ask-the-audience.png" alt="الجمهور" onerror="this.parentElement.textContent='الجمهور'" />
           </button>
-          <button id="audio-toggle" class="audio-control" type="button" onclick="toggleAudio()">
+          <button id="audio-toggle" class="audio-control" type="button" onclick="window.toggleAudio()">
             <i id="icon-unmute" class="fas fa-volume-up hidden"></i>
             <i id="icon-mute" class="fas fa-volume-mute"></i>
           </button>
@@ -261,10 +275,10 @@
         </div>
         <div id="question-card"><h2 id="question-text">...</h2></div>
         <div id="options-grid">
-          <div data-id="0" class="options" onclick="handleOptionClick(0)"><span class="opt-letter">أ:</span><span class="opt-text"></span></div>
-          <div data-id="1" class="options" onclick="handleOptionClick(1)"><span class="opt-letter">ب:</span><span class="opt-text"></span></div>
-          <div data-id="2" class="options" onclick="handleOptionClick(2)"><span class="opt-letter">ج:</span><span class="opt-text"></span></div>
-          <div data-id="3" class="options" onclick="handleOptionClick(3)"><span class="opt-letter">د:</span><span class="opt-text"></span></div>
+          <div data-id="0" class="options" onclick="window.handleOptionClick(0)"><span class="opt-letter">أ:</span><span class="opt-text"></span></div>
+          <div data-id="1" class="options" onclick="window.handleOptionClick(1)"><span class="opt-letter">ب:</span><span class="opt-text"></span></div>
+          <div data-id="2" class="options" onclick="window.handleOptionClick(2)"><span class="opt-letter">ج:</span><span class="opt-text"></span></div>
+          <div data-id="3" class="options" onclick="window.handleOptionClick(3)"><span class="opt-letter">د:</span><span class="opt-text"></span></div>
         </div>
       </div>
     </section>
@@ -274,11 +288,224 @@
       <div class="modal-box">
         <h3 id="lifeline-title" style="color:#fbbf24; font-size:1.6rem; font-weight:900; margin-bottom:1rem;"></h3>
         <div id="lifeline-body" style="font-size:1.1rem;"></div>
-        <button class="modal-btn" type="button" onclick="closeLifelineModal()">إغلاق</button>
+        <button class="modal-btn" type="button" onclick="window.closeLifelineModal()">إغلاق</button>
       </div>
     </div>
 
     <!-- نافذة النتيجة النهائية -->
     <div id="endgame-modal" class="modal-overlay hidden">
       <div class="modal-box">
-        <p id="endgame-subtitle" style="color:#fbbf24; font-weight:80
+        <p id="endgame-subtitle" style="color:#fbbf24; font-weight:800; font-size:1.15rem; margin-bottom:0.4rem;"></p>
+        <h2 id="endgame-title" style="font-size:1.9rem; font-weight:900; margin-bottom:1rem;"></h2>
+        <div style="background:#020617; border:2px solid #94a3b8; border-radius:14px; padding:1rem;">
+          <p style="color:#cbd5e1; font-size:0.95rem;">رصيدك النهائي</p>
+          <p id="endgame-prize" style="color:#fbbf24; font-size:2.2rem; font-weight:900;"></p>
+        </div>
+        <button class="modal-btn" type="button" onclick="window.restartGame()">العب مرة ثانية</button>
+      </div>
+    </div>
+
+    <script>
+      const PRIZE_LADDER = [
+        "1 قرش", "3 قروش", "5 قروش", "10 قروش", "20 قرش",
+        "ربع دينار", "نص دينار", "دينار واحد", "دينار ونص", "1.99 دينار"
+      ];
+
+      const QUESTIONS = [
+        { question: "ما هو لون الحليب الطبيعي؟", content: ["أبيض", "أزرق سماوي", "فسفوري", "شفاف"], correct: 0 },
+        { question: "إذا أكلت شاورما بدون مثومة، فماذا يُعتبر هذا الفعل في العُرف الأردني؟", content: ["خيانة عظمى للسندويشة", "نظام صحي متكامل", "توفير استراتيجي", "وصفة فرنسية"], correct: 0 },
+        { question: "كم تساوي مدة «خمس دقائق وبكون عندك» عند الشباب؟", content: ["5 دقائق بالضبط", "نصف ساعة إلى ما لا نهاية", "30 ثانية", "دقيقتين ونص"], correct: 1 },
+        { question: "ما هي المدينة الأردنية التي تُلقّب بـ «عروس الشمال»؟", content: ["السلط", "إربد", "الكرك", "معان"], correct: 1 },
+        { question: "أي من هذه العبارات تعني باللهجة الأردنية «اترك الموضوع عليّ ولا تهكل هم»؟", content: ["أبشر بعزّك", "يعطيك العافية", "صحّتين وهنا", "مساء الخير"], correct: 0 },
+        { question: "ما هو المكوّن الأساسي الذي يُصنع منه الجميد الكركي الأصيل؟", content: ["حليب الغنم أو الماعز", "حليب جوز الهند", "طحين القمح", "زيت الزيتون"], correct: 0 },
+        { question: "كم يبلغ مجموع قياس زوايا المثلث الداخلية؟", content: ["90 درجة", "180 درجة", "270 درجة", "360 درجة"], correct: 1 },
+        { question: "ما هو الكوكب الذي يُعرف في مجموعتنا الشمسية باسم «الكوكب الأحمر»؟", content: ["المشتري", "الزهرة", "المريخ", "زحل"], correct: 2 },
+        { question: "ما هي أطول سورة في القرآن الكريم؟", content: ["سورة آل عمران", "سورة النساء", "سورة البقرة", "سورة الأعراف"], correct: 2 },
+        { question: "إذا ربحت اليوم دينار و99 قرش، كم يتبقى لك لتُكمل الدينارين؟", content: ["قرش واحد فقط", "نصف دينار", "عشرة قروش", "ربع دينار"], correct: 0 }
+      ];
+
+      let currentIndex = 0;
+      let isAudioOn = true;
+      let phoneTimer = null;
+
+      function playSound(id, reset = true) {
+        if (!isAudioOn) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (reset) el.currentTime = 0;
+        el.play().catch(() => {});
+      }
+
+      function stopSound(id) {
+        const el = document.getElementById(id);
+        if (el) el.pause();
+      }
+
+      const delay = (ms) => new Promise((r) => setTimeout(r, ms));
+
+      function updateLadder(idx) {
+        document.querySelectorAll("#money-ladder li").forEach((li) => {
+          li.classList.toggle("money-active", Number(li.dataset.level) === idx);
+        });
+        document.getElementById("current-prize-badge").textContent =
+          "السؤال " + (idx + 1) + " من 10 • قيمة الجائزة: " + PRIZE_LADDER[idx];
+      }
+
+      function loadQuestion(idx) {
+        const grid = document.getElementById("options-grid");
+        grid.classList.remove("locked-grid");
+        const opts = document.querySelectorAll(".options");
+        opts.forEach((el) => el.classList.remove("selected-answer", "correct-answer", "wrong-answer", "disabled-option"));
+
+        playSound("lets-play-audio", false);
+        updateLadder(idx);
+
+        const q = QUESTIONS[idx];
+        document.getElementById("question-text").textContent = q.question;
+        opts.forEach((el, i) => {
+          el.querySelector(".opt-text").textContent = q.content[i];
+        });
+      }
+
+      window.startGame = function () {
+        document.getElementById("welcome-screen").classList.add("hidden");
+        document.getElementById("game-screen").classList.remove("hidden");
+        currentIndex = 0;
+        loadQuestion(0);
+      };
+
+      function getGuaranteedPrize(idx) {
+        if (idx >= 7) return "نص دينار";
+        if (idx >= 4) return "10 قروش";
+        return "0 قرش";
+      }
+
+      function showEndGame(isWinner, prize) {
+        stopSound("lets-play-audio");
+        const title = document.getElementById("endgame-title");
+        const sub = document.getElementById("endgame-subtitle");
+        if (isWinner) {
+          sub.textContent = "مبروك الفوز الساحق!";
+          title.textContent = "لقد ربحت الدينار و99 قرش!";
+          title.style.color = "#4ade80";
+        } else {
+          sub.textContent = "حظ أوفر في المرة القادمة";
+          title.textContent = "إجابة خاطئة! انتهت اللعبة";
+          title.style.color = "#f87171";
+        }
+        document.getElementById("endgame-prize").textContent = prize;
+        document.getElementById("endgame-modal").classList.remove("hidden");
+      }
+
+      window.handleOptionClick = async function (chosenIdx) {
+        const correctIdx = QUESTIONS[currentIndex].correct;
+        const opts = document.querySelectorAll(".options");
+
+        document.getElementById("options-grid").classList.add("locked-grid");
+        stopSound("lets-play-audio");
+        playSound("selected-answer-audio", true);
+        opts[chosenIdx].classList.add("selected-answer");
+
+        await delay(2500);
+
+        if (chosenIdx !== correctIdx) {
+          opts[chosenIdx].classList.replace("selected-answer", "wrong-answer");
+          opts[correctIdx].classList.add("correct-answer");
+          stopSound("selected-answer-audio");
+          playSound("wrong-answer-audio", true);
+          await delay(2500);
+          showEndGame(false, getGuaranteedPrize(currentIndex));
+        } else {
+          opts[chosenIdx].classList.replace("selected-answer", "correct-answer");
+          stopSound("selected-answer-audio");
+          playSound("correct-answer-audio", true);
+          await delay(3000);
+
+          if (currentIndex >= QUESTIONS.length - 1) {
+            showEndGame(true, "1.99 دينار");
+          } else {
+            currentIndex++;
+            loadQuestion(currentIndex);
+          }
+        }
+      };
+
+      window.useFiftyFifty = function () {
+        const btn = document.getElementById("fifty-fifty");
+        if (btn.classList.contains("lifeline-used")) return;
+        btn.classList.add("lifeline-used");
+        playSound("first-ping", true);
+
+        const correctIdx = QUESTIONS[currentIndex].correct;
+        const wrong = [0, 1, 2, 3].filter((i) => i !== correctIdx).sort(() => Math.random() - 0.5);
+        const opts = document.querySelectorAll(".options");
+        wrong.slice(0, 2).forEach((i) => opts[i].classList.add("disabled-option"));
+      };
+
+      window.usePhoneFriend = function () {
+        const btn = document.getElementById("phone-a-friend");
+        if (btn.classList.contains("lifeline-used")) return;
+        btn.classList.add("lifeline-used");
+        playSound("second-ping", true);
+
+        let sec = 30;
+        document.getElementById("lifeline-title").textContent = "اتصال بصديق";
+        document.getElementById("lifeline-body").innerHTML =
+          '<p style="margin-bottom:0.75rem;">جاري الاتصال بصديقك... معك 30 ثانية!</p>' +
+          '<div id="phone-timer" style="font-size:3rem; font-weight:900; color:#fbbf24;">' + sec + '</div>';
+        document.getElementById("lifeline-modal").classList.remove("hidden");
+
+        clearInterval(phoneTimer);
+        phoneTimer = setInterval(() => {
+          sec--;
+          const t = document.getElementById("phone-timer");
+          if (t) t.textContent = sec > 0 ? sec : "انتهى الوقت!";
+          if (sec <= 0) clearInterval(phoneTimer);
+        }, 1000);
+      };
+
+      window.useAskAudience = function () {
+        const btn = document.getElementById("ask-the-audience");
+        if (btn.classList.contains("lifeline-used")) return;
+        btn.classList.add("lifeline-used");
+        playSound("third-ping", true);
+
+        const correctIdx = QUESTIONS[currentIndex].correct;
+        const percents = [9, 8, 11, 7];
+        percents[correctIdx] = 74;
+        const letters = ["أ", "ب", "ج", "د"];
+
+        document.getElementById("lifeline-title").textContent = "نتيجة تصويت الجمهور";
+        document.getElementById("lifeline-body").innerHTML = letters.map((l, i) =>
+          '<div class="audience-row">' +
+            '<div class="audience-label"><span>الخيار (' + l + ')</span><span style="color:#fbbf24;">' + percents[i] + '%</span></div>' +
+            '<div class="audience-bar-bg"><div class="audience-bar-fill" style="width:' + percents[i] + '%"></div></div>' +
+          '</div>'
+        ).join("");
+        document.getElementById("lifeline-modal").classList.remove("hidden");
+      };
+
+      window.closeLifelineModal = function () {
+        clearInterval(phoneTimer);
+        document.getElementById("lifeline-modal").classList.add("hidden");
+      };
+
+      window.restartGame = function () {
+        document.getElementById("endgame-modal").classList.add("hidden");
+        ["fifty-fifty", "phone-a-friend", "ask-the-audience"].forEach((id) => {
+          document.getElementById(id).classList.remove("lifeline-used");
+        });
+        currentIndex = 0;
+        loadQuestion(0);
+      };
+
+      window.toggleAudio = function () {
+        isAudioOn = !isAudioOn;
+        document.getElementById("icon-unmute").classList.toggle("hidden", isAudioOn);
+        document.getElementById("icon-mute").classList.toggle("hidden", !isAudioOn);
+        if (isAudioOn) playSound("lets-play-audio", false);
+        else stopSound("lets-play-audio");
+      };
+    </script>
+  </body>
+</html>
