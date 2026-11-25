@@ -2,435 +2,207 @@
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>من سيربح الدينار و99 قرش</title>
-
-    <!-- Font Awesome -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-
-    <!-- Arabic Font: Cairo -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&display=swap" rel="stylesheet" />
     <style>
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-
+      * { box-sizing: border-box; margin: 0; padding: 0; }
       body {
         font-family: "Cairo", sans-serif;
-        background-color: #020617;
-        color: #ffffff;
+        background: radial-gradient(circle at center, #0a1f5c 0%, #020617 100%);
+        color: #fff;
         user-select: none;
-        overflow-x: hidden;
       }
+      .hidden { display: none !important; }
 
-      .hidden {
-        display: none !important;
-      }
-
-      /* ================= شاشة البداية ================= */
+      /* شاشة البداية */
       #welcome-screen {
         min-height: 100vh;
-        width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: flex-end;
         padding: 2rem 1rem 3rem;
-        background-image: url("images/welcome-background-img.jpg");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
+        background: url("images/welcome-background-img.jpg") center/cover no-repeat;
       }
-
       @media (max-width: 640px) {
-        #welcome-screen {
-          background-image: url("images/welcome-background-mobile.jpg");
-        }
+        #welcome-screen { background-image: url("images/welcome-background-mobile.jpg"); }
       }
-
       .title-box {
-        background: linear-gradient(180deg, #061338 0%, #0d2b7a 50%, #061338 100%);
+        background: linear-gradient(180deg, #061338, #0d2b7a, #061338);
         border: 3px solid #60a5fa;
         border-radius: 16px;
-        padding: 1rem 2.5rem;
+        padding: 1rem 2rem;
         text-align: center;
-        margin-bottom: 1.25rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
-        max-width: 650px;
+        margin-bottom: 1.2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.85);
+        max-width: 620px;
         width: 92%;
       }
-
-      .title-box .subtitle {
-        color: #f59e0b;
-        font-size: 1rem;
-        font-weight: 800;
-        margin-bottom: 0.25rem;
-      }
-
-      .title-box h1 {
-        font-size: clamp(1.5rem, 4vw, 2.5rem);
-        font-weight: 900;
-        color: #ffffff;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
-      }
+      .title-box .subtitle { color: #f59e0b; font-size: 1rem; font-weight: 800; }
+      .title-box h1 { font-size: clamp(1.5rem, 4vw, 2.4rem); font-weight: 900; }
 
       #lets-play {
         cursor: pointer;
-        background: linear-gradient(180deg, #061338 0%, #103494 50%, #061338 100%);
+        position: relative;
+        z-index: 20;
+        background: linear-gradient(180deg, #061338, #103494, #061338);
         border: 3px solid #60a5fa;
         border-radius: 14px;
         padding: 0.9rem 2rem;
-        color: #ffffff;
+        color: #fff;
         font-family: "Cairo", sans-serif;
         font-size: 1.4rem;
         font-weight: 900;
         width: 92%;
-        max-width: 420px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
-        transition: all 0.25s ease;
+        max-width: 400px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.85);
       }
-
-      #lets-play:hover {
-        background: linear-gradient(180deg, #fbbf24 0%, #d97706 100%);
-        color: #000000;
+      #lets-play:hover, #lets-play:active {
+        background: linear-gradient(180deg, #fbbf24, #d97706);
+        color: #000;
         border-color: #fef08a;
-        transform: scale(1.02);
       }
 
-      /* ================= شاشة اللعب ================= */
+      /* شاشة اللعب */
       #game-screen {
         min-height: 100vh;
-        width: 100%;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
-        padding: 1.25rem 1rem 1.75rem;
-        background-image: url("images/game-background.jpg");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
+        padding: 1.2rem 1rem 1.8rem;
+        background: url("images/game-background.jpg") center/cover no-repeat;
       }
-
       .top-bar {
         width: 100%;
-        max-width: 1100px;
+        max-width: 1050px;
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
         gap: 1rem;
         flex-wrap: wrap;
       }
-
-      /* وسائل المساعدة */
       .lifelines-panel {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.75rem;
-        background: rgba(5, 15, 45, 0.75);
+        gap: 0.7rem;
+        background: rgba(5, 15, 45, 0.8);
         padding: 0.75rem;
         border-radius: 16px;
         border: 2px solid #3b82f6;
       }
-
       @media (max-width: 640px) {
-        .lifelines-panel {
-          flex-direction: row;
-          width: 100%;
-          justify-content: space-around;
-        }
+        .lifelines-panel { flex-direction: row; width: 100%; justify-content: space-around; }
       }
-
-      .lifeline-btn {
-        cursor: pointer;
-        transition: transform 0.2s ease, filter 0.2s ease;
-        background: none;
-        border: none;
-      }
-
-      .lifeline-btn:hover {
-        transform: scale(1.08);
-      }
-
-      .lifeline-btn img {
-        width: 72px;
-        height: auto;
-        display: block;
-      }
-
-      @media (max-width: 640px) {
-        .lifeline-btn img {
-          width: 58px;
-        }
-      }
-
-      .lifeline-used {
-        opacity: 0.3;
-        pointer-events: none;
-        filter: grayscale(100%);
-      }
-
-      .audio-control {
-        background: none;
-        border: none;
-        color: #ffffff;
-        font-size: 2rem;
-        cursor: pointer;
-        padding: 0.25rem 0.5rem;
-        transition: color 0.2s ease;
-      }
-
-      .audio-control:hover {
-        color: #f59e0b;
-      }
+      .lifeline-btn { background: none; border: none; cursor: pointer; }
+      .lifeline-btn img { width: 68px; display: block; }
+      @media (max-width: 640px) { .lifeline-btn img { width: 54px; } }
+      .lifeline-used { opacity: 0.28; pointer-events: none; filter: grayscale(100%); }
+      .audio-control { background: none; border: none; color: #fff; font-size: 1.9rem; cursor: pointer; }
 
       /* سلم الجوائز */
       .ladder-card {
         background: rgba(6, 18, 54, 0.92);
         border: 3px solid #cbd5e1;
         border-radius: 14px;
-        padding: 0.65rem 1.25rem;
-        min-width: 235px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.75);
+        padding: 0.6rem 1.2rem;
+        min-width: 230px;
       }
-
-      @media (max-width: 640px) {
-        .ladder-card {
-          width: 100%;
-        }
-      }
-
-      #money-ladder {
-        list-style: none;
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: #f59e0b;
-      }
-
+      @media (max-width: 640px) { .ladder-card { width: 100%; } }
+      #money-ladder { list-style: none; font-size: 0.95rem; font-weight: 700; color: #f59e0b; }
       #money-ladder li {
-        padding: 0.15rem 0.65rem;
+        padding: 0.15rem 0.6rem;
         border-radius: 6px;
         display: flex;
         justify-content: space-between;
       }
-
-      #money-ladder li.milestone {
-        color: #ffffff;
-        font-weight: 900;
-      }
-
+      #money-ladder li.milestone { color: #fff; font-weight: 900; }
       #money-ladder li.money-active {
         background: linear-gradient(90deg, #d97706, #fbbf24, #d97706);
-        color: #000000 !important;
+        color: #000 !important;
         font-weight: 900;
       }
 
-      /* منطقة السؤال والخيارات */
-      .quiz-area {
-        width: 100%;
-        max-width: 1000px;
-        margin-top: 1rem;
-      }
-
-      .prize-badge-wrap {
-        text-align: center;
-        margin-bottom: 0.6rem;
-      }
-
+      /* الأسئلة والخيارات */
+      .quiz-area { width: 100%; max-width: 1000px; margin-top: 1rem; }
+      .prize-badge-wrap { text-align: center; margin-bottom: 0.6rem; }
       #current-prize-badge {
         display: inline-block;
         background: rgba(6, 18, 54, 0.95);
         border: 2px solid #f59e0b;
         color: #fbbf24;
         font-weight: 800;
-        font-size: 1rem;
-        padding: 0.3rem 1.25rem;
+        padding: 0.3rem 1.2rem;
         border-radius: 999px;
       }
-
       #question-card {
-        background: linear-gradient(180deg, #061338 0%, #0e2e82 50%, #061338 100%);
+        background: linear-gradient(180deg, #061338, #0e2e82, #061338);
         border: 3px solid #60a5fa;
         border-radius: 16px;
-        padding: 1.25rem 1.5rem;
+        padding: 1.2rem 1.5rem;
         text-align: center;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
         margin-bottom: 1rem;
       }
-
-      #question-card h2 {
-        font-size: clamp(1.15rem, 2.6vw, 1.65rem);
-        font-weight: 800;
-        line-height: 1.6;
-      }
-
-      #options-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.85rem;
-      }
-
-      @media (max-width: 640px) {
-        #options-grid {
-          grid-template-columns: 1fr;
-        }
-      }
+      #question-card h2 { font-size: clamp(1.15rem, 2.5vw, 1.6rem); font-weight: 800; }
+      #options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.85rem; }
+      @media (max-width: 640px) { #options-grid { grid-template-columns: 1fr; } }
 
       .options {
-        background: linear-gradient(180deg, #061338 0%, #0d2b7a 50%, #061338 100%);
+        background: linear-gradient(180deg, #061338, #0d2b7a, #061338);
         border: 3px solid #60a5fa;
         border-radius: 14px;
-        padding: 0.85rem 1.25rem;
+        padding: 0.85rem 1.2rem;
         font-size: 1.15rem;
         font-weight: 700;
         cursor: pointer;
         display: flex;
         align-items: center;
-        transition: all 0.2s ease;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7);
       }
+      .options:hover { background: linear-gradient(180deg, #fbbf24, #d97706); color: #000; border-color: #fef08a; }
+      .options:hover .opt-letter { color: #000; }
+      .opt-letter { color: #f59e0b; font-weight: 900; margin-left: 0.6rem; }
 
-      .options:hover {
-        background: linear-gradient(180deg, #fbbf24 0%, #d97706 100%);
-        color: #000000;
-        border-color: #fef08a;
-      }
+      .selected-answer { background: linear-gradient(180deg, #fbbf24, #b45309) !important; color: #000 !important; border-color: #fef08a !important; }
+      .selected-answer .opt-letter { color: #000 !important; }
+      .correct-answer { background: linear-gradient(180deg, #22c55e, #15803d) !important; color: #fff !important; border-color: #bbf7d0 !important; }
+      .correct-answer .opt-letter { color: #fff !important; }
+      .wrong-answer { background: linear-gradient(180deg, #ef4444, #991b1b) !important; color: #fff !important; border-color: #fecaca !important; }
+      .disabled-option { opacity: 0.18; pointer-events: none; }
+      .locked-grid { pointer-events: none; }
 
-      .options:hover .opt-letter {
-        color: #000000;
-      }
-
-      .opt-letter {
-        color: #f59e0b;
-        font-weight: 900;
-        margin-left: 0.65rem;
-      }
-
-      .selected-answer {
-        background: linear-gradient(180deg, #fbbf24 0%, #b45309 100%) !important;
-        color: #000000 !important;
-        border-color: #fef08a !important;
-      }
-
-      .selected-answer .opt-letter {
-        color: #000000 !important;
-      }
-
-      .correct-answer {
-        background: linear-gradient(180deg, #22c55e 0%, #15803d 100%) !important;
-        color: #ffffff !important;
-        border-color: #bbf7d0 !important;
-      }
-
-      .correct-answer .opt-letter {
-        color: #ffffff !important;
-      }
-
-      .wrong-answer {
-        background: linear-gradient(180deg, #ef4444 0%, #991b1b 100%) !important;
-        color: #ffffff !important;
-        border-color: #fecaca !important;
-      }
-
-      .disabled-option {
-        opacity: 0.18;
-        pointer-events: none;
-      }
-
-      .locked-grid {
-        pointer-events: none;
-      }
-
-      /* ================= النوافذ المنبثقة ================= */
+      /* النوافذ المنبثقة */
       .modal-overlay {
-        position: fixed;
-        inset: 0;
-        z-index: 999;
-        background: rgba(0, 0, 0, 0.85);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 1rem;
+        position: fixed; inset: 0; z-index: 999;
+        background: rgba(0,0,0,0.85);
+        display: flex; align-items: center; justify-content: center; padding: 1rem;
       }
-
       .modal-box {
-        background: linear-gradient(180deg, #061338 0%, #0e2a75 100%);
+        background: linear-gradient(180deg, #061338, #0e2a75);
         border: 4px solid #f59e0b;
         border-radius: 20px;
         padding: 2rem 1.5rem;
-        max-width: 480px;
+        max-width: 460px;
         width: 100%;
         text-align: center;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
       }
-
       .modal-btn {
-        cursor: pointer;
-        margin-top: 1.25rem;
-        background: linear-gradient(180deg, #061338 0%, #103494 100%);
-        border: 2px solid #f59e0b;
-        border-radius: 12px;
-        padding: 0.65rem 2rem;
-        color: #ffffff;
-        font-family: "Cairo", sans-serif;
-        font-size: 1.1rem;
-        font-weight: 800;
-        transition: all 0.2s ease;
+        cursor: pointer; margin-top: 1.2rem;
+        background: linear-gradient(180deg, #061338, #103494);
+        border: 2px solid #f59e0b; border-radius: 12px;
+        padding: 0.65rem 2rem; color: #fff;
+        font-family: "Cairo", sans-serif; font-size: 1.1rem; font-weight: 800;
       }
-
-      .modal-btn:hover {
-        background: #f59e0b;
-        color: #000000;
-      }
-
-      .audience-row {
-        margin-bottom: 0.75rem;
-        text-align: right;
-      }
-
-      .audience-label {
-        display: flex;
-        justify-content: space-between;
-        font-weight: 800;
-        margin-bottom: 0.2rem;
-      }
-
-      .audience-bar-bg {
-        width: 100%;
-        height: 14px;
-        background: #020617;
-        border-radius: 999px;
-        border: 1px solid #60a5fa;
-        overflow: hidden;
-      }
-
-      .audience-bar-fill {
-        height: 100%;
-        background: linear-gradient(90deg, #d97706, #fbbf24);
-      }
+      .modal-btn:hover { background: #f59e0b; color: #000; }
+      .audience-row { margin-bottom: 0.75rem; text-align: right; }
+      .audience-label { display: flex; justify-content: space-between; font-weight: 800; margin-bottom: 0.2rem; }
+      .audience-bar-bg { width: 100%; height: 14px; background: #020617; border-radius: 999px; border: 1px solid #60a5fa; overflow: hidden; }
+      .audience-bar-fill { height: 100%; background: linear-gradient(90deg, #d97706, #fbbf24); }
     </style>
   </head>
-
   <body>
-    <!-- ملفات الصوت -->
     <audio id="first-ping" src="audio/first-ping.mp3"></audio>
     <audio id="second-ping" src="audio/second-ping.mp3"></audio>
     <audio id="third-ping" src="audio/third-ping.mp3"></audio>
@@ -445,17 +217,68 @@
         <p class="subtitle">النسخة الخاصة</p>
         <h1>من سيربح الدينار و99 قرش؟</h1>
       </div>
-      <button id="lets-play" type="button">ابدأ اللعب</button>
+      <button id="lets-play" type="button" onclick="startGame()">ابدأ اللعب</button>
     </section>
 
-    <!-- شاشة اللعب الرئيسية -->
+    <!-- شاشة اللعب -->
     <section id="game-screen" class="hidden">
       <div class="top-bar">
-        <!-- وسائل المساعدة والصوت -->
         <div class="lifelines-panel">
-          <button id="fifty-fifty" class="lifeline-btn" type="button" title="حذف إجابتين">
+          <button id="fifty-fifty" class="lifeline-btn" type="button" onclick="useFiftyFifty()">
             <img src="images/50-50.png" alt="حذف إجابتين" />
           </button>
+          <button id="phone-a-friend" class="lifeline-btn" type="button" onclick="usePhoneFriend()">
+            <img src="images/phone-a-friend.png" alt="اتصال بصديق" />
+          </button>
+          <button id="ask-the-audience" class="lifeline-btn" type="button" onclick="useAskAudience()">
+            <img src="images/ask-the-audience.png" alt="رأي الجمهور" />
+          </button>
+          <button id="audio-toggle" class="audio-control" type="button" onclick="toggleAudio()">
+            <i id="icon-unmute" class="fas fa-volume-up hidden"></i>
+            <i id="icon-mute" class="fas fa-volume-mute"></i>
+          </button>
+        </div>
 
-          <button id="phone-a-friend" class="lifeline-btn" type="button" title="اتصال بصديق">
-            <img src="
+        <div class="ladder-card">
+          <ul id="money-ladder">
+            <li data-level="9" class="milestone"><span>10</span><span>1.99 دينار</span></li>
+            <li data-level="8"><span>9</span><span>دينار ونص</span></li>
+            <li data-level="7"><span>8</span><span>دينار واحد</span></li>
+            <li data-level="6" class="milestone"><span>7</span><span>نص دينار</span></li>
+            <li data-level="5"><span>6</span><span>ربع دينار</span></li>
+            <li data-level="4"><span>5</span><span>20 قرش</span></li>
+            <li data-level="3" class="milestone"><span>4</span><span>10 قروش</span></li>
+            <li data-level="2"><span>3</span><span>5 قروش</span></li>
+            <li data-level="1"><span>2</span><span>3 قروش</span></li>
+            <li data-level="0" class="money-active"><span>1</span><span>1 قرش</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="quiz-area">
+        <div class="prize-badge-wrap">
+          <span id="current-prize-badge">السؤال 1 من 10 • قيمة الجائزة: 1 قرش</span>
+        </div>
+        <div id="question-card"><h2 id="question-text">...</h2></div>
+        <div id="options-grid">
+          <div data-id="0" class="options" onclick="handleOptionClick(0)"><span class="opt-letter">أ:</span><span class="opt-text"></span></div>
+          <div data-id="1" class="options" onclick="handleOptionClick(1)"><span class="opt-letter">ب:</span><span class="opt-text"></span></div>
+          <div data-id="2" class="options" onclick="handleOptionClick(2)"><span class="opt-letter">ج:</span><span class="opt-text"></span></div>
+          <div data-id="3" class="options" onclick="handleOptionClick(3)"><span class="opt-letter">د:</span><span class="opt-text"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- نافذة وسائل المساعدة -->
+    <div id="lifeline-modal" class="modal-overlay hidden">
+      <div class="modal-box">
+        <h3 id="lifeline-title" style="color:#fbbf24; font-size:1.6rem; font-weight:900; margin-bottom:1rem;"></h3>
+        <div id="lifeline-body" style="font-size:1.1rem;"></div>
+        <button class="modal-btn" type="button" onclick="closeLifelineModal()">إغلاق</button>
+      </div>
+    </div>
+
+    <!-- نافذة النتيجة النهائية -->
+    <div id="endgame-modal" class="modal-overlay hidden">
+      <div class="modal-box">
+        <p id="endgame-subtitle" style="color:#fbbf24; font-weight:80
