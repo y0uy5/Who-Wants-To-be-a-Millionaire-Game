@@ -1,19 +1,17 @@
-// ==================================================== //
-// ==== All the buttons are obtained in this file ==== //
-// ================================================= //
-
-
-// ===================================================== //
-// ==== Get [Let's Play] Button(Start Game Button) ==== //
-// =================================================== //
 const letsPlayBtn = document.getElementById("lets-play");
-
-// ========================================= //
-// ==== Get Audio/Sound Control Button ==== //
-// ======================================= //
 const audioBtnControl = document.querySelector(".audio-control");
+const fiftyFiftyBtn = document.getElementById("fifty-fifty");
+const phoneFriendBtn = document.getElementById("phone-a-friend");
+const askAudienceBtn = document.getElementById("ask-the-audience");
+const restartBtn = document.getElementById("restart-game");
+const closeModalBtn = document.getElementById("close-lifeline-modal");
 
 export {
   letsPlayBtn,
-  audioBtnControl
-}
+  audioBtnControl,
+  fiftyFiftyBtn,
+  phoneFriendBtn,
+  askAudienceBtn,
+  restartBtn,
+  closeModalBtn
+};
